@@ -5,16 +5,20 @@ const ScreenSizeFinder = () => {
     const [screenSize, setScreenSize] = useState({
         width: window.innerWidth,
         height: window.innerHeight,
+        devicePixelRatio: window.devicePixelRatio,
     });
 
     const updateScreenSize = () => {
         setScreenSize({
             width: window.innerWidth,
             height: window.innerHeight,
+            devicePixelRatio: window.devicePixelRatio,
         });
     };
 
     useEffect(() => {
+        console.log(window.devicePixelRatio); // Log device pixel ratio in the console
+
         window.addEventListener('resize', updateScreenSize);
         return () => {
             window.removeEventListener('resize', updateScreenSize);
@@ -113,6 +117,18 @@ const ScreenSizeFinder = () => {
                         </button>
                     </p>
                 </div>
+            </div>
+            <div className="pixelRatio">
+                <h2 className="subHeader">Device Pixel Ratio:</h2>
+                <p>
+                    {screenSize.devicePixelRatio}
+                    <button
+                        onClick={() => copyToClipboard(`Device Pixel Ratio: ${screenSize.devicePixelRatio}`)}
+                        className="copyButton"
+                    >
+                        Copy
+                    </button>
+                </p>
             </div>
         </div>
     );
