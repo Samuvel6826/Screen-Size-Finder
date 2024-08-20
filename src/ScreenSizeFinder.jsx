@@ -130,6 +130,11 @@ const ScreenSizeFinder = () => {
                     </button>
                 </p>
             </div>
+            <div className='check'>
+                Check 1
+
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quia dolore nulla corporis delectus eum totam iste fugit soluta debitis nihil tenetur recusandae veritatis libero, beatae veniam velit cumque dicta consequatur!
+            </div>
         </div>
     );
 };

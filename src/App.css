@@ -39,3 +39,9 @@
 	background-color: #0056b3;
 	border-color: #0056b3;
 }
+@media (min-width: 530px) {
+	/* Styles for DPR 2 and width of 530px CSS pixels */
+	.check {
+		color: red;
+	}
+}
