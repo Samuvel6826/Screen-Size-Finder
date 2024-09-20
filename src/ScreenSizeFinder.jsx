@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Toaster, toast } from 'react-hot-toast';
 
 const ScreenSizeFinder = () => {
     const [screenSize, setScreenSize] = useState({
@@ -6,7 +7,6 @@ const ScreenSizeFinder = () => {
         height: window.innerHeight,
         devicePixelRatio: window.devicePixelRatio,
     });
-    const [alertMessage, setAlertMessage] = useState('');
     const [orientation, setOrientation] = useState(window.screen.orientation.type);
     const [isAnimating, setIsAnimating] = useState(false);
 
@@ -33,16 +33,18 @@ const ScreenSizeFinder = () => {
     const pxToRem = (px) => px / 16;
     const pxToVh = (px) => (px / window.innerHeight) * 100;
     const pxToVw = (px) => (px / window.innerWidth) * 100;
+    const pxToEm = (px) => px / 16;
+    const pxToPercentageWidth = (px) => (px / window.innerWidth) * 100;
+    const pxToPercentageHeight = (px) => (px / window.innerHeight) * 100;
 
-    const copyToClipboard = (text) => {
-        navigator.clipboard.writeText(text);
-        showAlert(`Copied: ${text}`);
+    const showAlert = (message) => {
+        toast(message);
     };
 
     const getAllInfo = () => {
         return `Screen Size Information:
-Width: ${screenSize.width}px (${pxToRem(screenSize.width).toFixed(2)}rem, ${pxToVw(screenSize.width).toFixed(2)}vw)
-Height: ${screenSize.height}px (${pxToRem(screenSize.height).toFixed(2)}rem, ${pxToVh(screenSize.height).toFixed(2)}vh)
+Width: ${screenSize.width}px (${pxToRem(screenSize.width).toFixed(2)}rem, ${pxToVw(screenSize.width).toFixed(2)}vw, ${pxToPercentageWidth(screenSize.width).toFixed(2)}%)
+Height: ${screenSize.height}px (${pxToRem(screenSize.height).toFixed(2)}rem, ${pxToVh(screenSize.height).toFixed(2)}vh, ${pxToPercentageHeight(screenSize.height).toFixed(2)}%)
 Device Pixel Ratio: ${screenSize.devicePixelRatio}
 Aspect Ratio: ${getAspectRatio()}
 Device Category: ${getDeviceCategory()}
@@ -62,11 +64,6 @@ Preferred Color Scheme: ${getPreferredColorScheme()}`;
         const allInfo = getAllInfo();
         const encodedInfo = encodeURIComponent(allInfo);
         window.open(`https://wa.me/?text=${encodedInfo}`, '_blank');
-    };
-
-    const showAlert = (message) => {
-        setAlertMessage(message);
-        setTimeout(() => setAlertMessage(''), 3000);
     };
 
     const getAspectRatio = () => {
@@ -100,13 +97,14 @@ Preferred Color Scheme: ${getPreferredColorScheme()}`;
             <span className="label">{label}</span>
             <div className="value-container">
                 <span className="value">{value}{unit}</span>
-                <button onClick={() => copyToClipboard(`${value}${unit}`)}>Copy</button>
+                <button onClick={() => navigator.clipboard.writeText(`${value}${unit}`)}>Copy</button>
             </div>
         </div>
     );
 
     return (
         <div className="screen-size-finder">
+            <Toaster />
             <header>
                 <h1>Screen Size Finder</h1>
                 <p className="subtitle">Resize your browser to see real-time updates</p>
@@ -118,12 +116,16 @@ Preferred Color Scheme: ${getPreferredColorScheme()}`;
                         <SizeInfo label="Pixels" value={screenSize.width} unit="px" />
                         <SizeInfo label="REM" value={pxToRem(screenSize.width).toFixed(2)} unit="rem" />
                         <SizeInfo label="VW" value={pxToVw(screenSize.width).toFixed(2)} unit="vw" />
+                        <SizeInfo label="EM" value={pxToEm(screenSize.width).toFixed(2)} unit="em" />
+                        <SizeInfo label="Percentage Width" value={pxToPercentageWidth(screenSize.width).toFixed(2)} unit="%" />
                     </div>
                     <div className="size-column">
                         <h2>Height</h2>
                         <SizeInfo label="Pixels" value={screenSize.height} unit="px" />
                         <SizeInfo label="REM" value={pxToRem(screenSize.height).toFixed(2)} unit="rem" />
                         <SizeInfo label="VH" value={pxToVh(screenSize.height).toFixed(2)} unit="vh" />
+                        <SizeInfo label="EM" value={pxToEm(screenSize.height).toFixed(2)} unit="em" /> {/* Added EM */}
+                        <SizeInfo label="Percentage Height" value={pxToPercentageHeight(screenSize.height).toFixed(2)} unit="%" />
                     </div>
                 </section>
                 <section className="additional-info">
@@ -143,11 +145,6 @@ Preferred Color Scheme: ${getPreferredColorScheme()}`;
                     <button onClick={sendToWhatsApp} className="secondary">Send to WhatsApp</button>
                 </div>
             </footer>
-            {alertMessage && (
-                <div className="alert">
-                    <p>{alertMessage}</p>
-                </div>
-            )}
         </div>
     );
 };
